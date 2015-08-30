@@ -2,7 +2,7 @@
 @author: Ivan Florentin <ivan@sinergetica.com>
 */
 
-export default class Flux {
+class Flux {
 
     constructor() {
         this.actions = {};
@@ -41,3 +41,5 @@ export default class Flux {
         }
     }
 }
+exprts.Flux = Flux;
+
