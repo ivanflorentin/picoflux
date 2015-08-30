@@ -1,0 +1,23 @@
+{
+  "name": "picoflux",
+  "version": "1.0.0",
+  "description": "An ultra light, minimalistic Flux implementation",
+  "main": "picoflux.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivanflorentin/picoflux.git"
+  },
+  "keywords": [
+    "React",
+    "Flux"
+  ],
+  "author": "Ivan Florentin <ivan@sinergetica.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivanflorentin/picoflux/issues"
+  },
+  "homepage": "https://github.com/ivanflorentin/picoflux"
+}
