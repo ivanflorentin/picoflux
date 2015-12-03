@@ -19,5 +19,14 @@
   "bugs": {
     "url": "https://github.com/ivanflorentin/picoflux/issues"
   },
-  "homepage": "https://github.com/ivanflorentin/picoflux"
+  "homepage": "https://github.com/ivanflorentin/picoflux",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.1.18",
+    "babelify": "^7.2.0"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  }
 }
