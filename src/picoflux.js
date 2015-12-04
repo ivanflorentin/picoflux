@@ -17,12 +17,16 @@ class Flux {
      often by user interaction
      */
     addAction(actionName) {
-	if (actionName in this.actions){
-	    console.error('action already exists!', actionName);
-	}
-	else {
-            this.actions[actionName] = [];
-	}
+	return new Promise((resolve, reject) => {
+	    if (actionName in this.actions){
+		let msg = 'Action {Action} already exists!'
+		    .replace('{Action}', actionName);
+		reject(new Error(msg));
+	    }else {
+		this.actions[actionName] = [];
+		resolve(actionName);
+	    }
+	});
     }
 
     /*
@@ -30,54 +34,71 @@ class Flux {
      store
      */
     addListener(actionName, func) {
-        if (actionName in this.actions) {
-            this.actions[actionName].push(func);
-        } else {
-            console.error('No action with that name:', actionName);
-        }
+	return new Promise((resolve, reject) => {
+            if (actionName in this.actions) {
+		this.actions[actionName].push(func);
+		resolve(actionName);
+            } else {
+		let msg = 'No Action with the name {Action} found!'
+		    .replace('{Action}', actionName);
+		reject(new Error(msg));
+	    }
+        });
     }
 
     /*
      Excecute the action, call the listeners with the pyload
      */
     action(actionName, payload) {
-        if (actionName in this.actions) {
-            if (this.actions[actionName].length > 0) {
-                for (var func of this.actions[actionName]) {
-                    func(payload);
-                }
+	return new Promise((resolve, reject) => {
+            if (actionName in this.actions) {
+		if (this.actions[actionName].length > 0) {
+                    for (let func of this.actions[actionName]) {
+			func(payload);
+			resolve(actionName);
+                    }
+		} else {
+                    let msg = "No listeners for action: " +  actionName;
+		    reject(new Error(msg));
+		}
             } else {
-                console.error('No listeners for action: ', actionName);
+		let msg = 'No Action with the name {Action} found!'
+		    .replace('{Action}', actionName);
+		reject(new Error(msg));
             }
-        } else {
-            console.error('Action not found: ', actionName, 'Payload: ',
-			  payload);
-        }
+	});
     }
 
     /*
      Add a flux event
      */
     addEvent(fluxEvent){
-	if (fluxEvent in this.events){
-	    console.error('event already exists!', fluxEvent);
-	}
-	else {
-	    this.events[fluxEvent] = [];
-	}
+	return new Promise((resolve, reject) => {
+	    if (fluxEvent in this.events){
+		let msg = 'event {FluxEvent} already exists!'
+		    .replace("{FluxEvent}", fluxEvent);
+		reject(new Error(msg));
+	    }else {
+		this.events[fluxEvent] = [];
+		resolve(fluxEvent);
+	    }
+	});
     }
 
     /*
      Susccribe to a flux Event, generally a data change
      */
     suscribe(fluxEvent, func) {
-	if (fluxEvent in this.events){
-            this.events[fluxEvent].push(func);	    
-	}
-	else {
-	    console.error('Unable to attach event. Event does not exists: ',
-			fluxEvent);
-	}
+	return new Promise((resolve, reject) => {
+	    if (fluxEvent in this.events){
+		this.events[fluxEvent].push(func);
+		resolve(fluxEvent);
+	    }else {
+		let msg = 'Unable to attach event. Event {FluxEvent} does not exists.'
+			      .replace("{FluxEvent}", fluxEvent);
+		reject(new Error(msg));
+	    }
+	});
     }
     
     /*
@@ -85,26 +106,36 @@ class Flux {
      re render
      */
     notify(fluxEvent) {
-	if (fluxEvent in this.events){
-            for (var observer of this.events[fluxEvent]) {
-		observer();
-            }
-	}
-	else{
-	    console.log('Unable to notify unexisting event: ', fluxEvent);
-	}
+	return new Promise((resolve, reject) => {
+	    if (fluxEvent in this.events){
+		for (var observer of this.events[fluxEvent]) {
+		    observer();
+		    resolve(fluxEvent);
+		}
+	    }else{
+		let msg = 'Unable to notify unexisting event: {FluxEvent}.'
+		    .replace("{FluxEvent}", fluxEvent);
+		reject(new Error(msg));
+
+	    }
+	});
     }
     
     /*
      Register a datastore with a handler function for data retreival 
      */
     registerStore(rootName, func){
-	if (rootName in this.stores){
-	    console.log('Store already registered');
-	}
-	else {
-	    this.stores[rootName] = func;
-	}
+	return new Promise((resolve, reject) => {
+	    if (rootName in this.stores){
+		let msg = 'Store {Store} already registered'
+		    .replace("{Store}", rootName);
+		reject(new Error(msg));
+	    }
+	    else {
+		this.stores[rootName] = func;
+		resolve(rootName);
+	    }
+	});
     }
     
     /*
@@ -113,14 +144,18 @@ class Flux {
      The first element represents the dataStore name.
      */
     getData(dataRoute){
-	var data = '';
-	if(dataRoute[0] in this.stores){
-	    let p = this.stores[dataRoute[0]](dataRoute);
-	    return p;
-	}
-	else{
-	    return new Promise.reject('DataPath not found:', dataRoute);
-	}
+	return new Promise((resolve, reject) => {
+	    var data = '';
+	    if(dataRoute[0] in this.stores){
+		let p = this.stores[dataRoute[0]](dataRoute);
+		resolve(p);
+	    }
+	    else{
+		let msg = 'DataPath {DataRoute} not found'
+		    .replace("{DataRoute}", dataRoute);
+		reject(new Error(msg));
+	    }
+	});
     }
 }
 
